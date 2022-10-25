@@ -32,7 +32,7 @@ resource "aws_lb" "private" {
   internal           = true
   load_balancer_type = "application"
   security_groups    = [aws_security_group.private.id]
-  subnets            = var.vpc_cidr_block
+  subnets            = [var.vpc_cidr_block]
 
   tags = {
     Environment = "roboshop-${var.env}-private"
