@@ -9,21 +9,12 @@ resource "aws_lb" "public" {
     Environment = "roboshop-${var.env}-public"
   }
 }
+
 resource "aws_lb_target_group" "public" {
   name                 = "frontend-${var.env}"
   port                 = 80
   protocol             = "HTTP"
   vpc_id               = var.vpc_id
-  deregistration_delay = 0
-  health_check {
-    enabled             = true
-    healthy_threshold   = 2
-    interval            = 5
-    timeout             = 4
-    port                = 80
-    unhealthy_threshold = 2
-    path                = "/nginx_status"
-  }
 }
 
 resource "aws_lb_listener" "public-https" {
@@ -36,6 +27,22 @@ resource "aws_lb_listener" "public-https" {
   default_action {
     type             = "forward"
     target_group_arn = aws_lb_target_group.public.arn
+  }
+}
+
+resource "aws_lb_listener" "public-http" {
+  load_balancer_arn = aws_lb.public.arn
+  port = "80"
+  protocol = "HTTP"
+
+  default_action {
+    type = "redirect"
+
+    redirect {
+      port = "443"
+      protocol = "HTTPS"
+      status_code = "HTTP_301"
+    }
   }
 }
 
