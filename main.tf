@@ -66,7 +66,6 @@ resource "aws_security_group" "public" {
     cidr_blocks = ["0.0.0.0/0"]
   }
   egress {
-    description = ""
     from_port   = 0
     to_port     = 0
     protocol    = "-1"
